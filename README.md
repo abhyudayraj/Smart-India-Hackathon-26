@@ -1,83 +1,81 @@
-# Intelligent Dead Reckoning (DR) System — SIH Prototype
+# AI/ML Based Intelligent Dead Reckoning System for Seamless Navigation
 
-AI/ML Based Intelligent Dead Reckoning System for Seamless Navigation.
+## Stage 2 — Synthetic Trajectory Generation
 
-This repo is being built as a 10-stage hackathon prototype:
+**Why synthetic data?** Real GNSS/IMU logs with known ground truth and a
+labeled GPS outage are hard to get on short notice. Generating synthetic
+data lets us control exactly when GPS is available, guarantees a known
+ground truth for every later error calculation, and keeps the dataset
+reproducible (fixed random seed = 42).
 
-1. **Define scenario** ✅ (this stage)
-2. Create/obtain trajectory data
-3. Convert GPS to X/Y
-4. Implement dead reckoning
-5. Remove GPS during simulated outage
-6. Show DR drift
-7. Train ML to predict DR error
-8. Correct DR using ML
-9. Calculate DR vs AI error
-10. Display both trajectories in a dashboard
+- **Ground truth**: the true, noise-free position/speed/heading/
+  acceleration/angular velocity of the simulated vehicle. This is the
+  reference every later stage compares against.
+- **GPS measurements**: a noisy version of the ground-truth position
+  (`gps_x`, `gps_y`, `gps_latitude`, `gps_longitude`) plus a
+  `gps_available` flag. During the simulated outage (60s–90s) these
+  columns are `NaN` and `gps_available = 0`, while timestamps stay
+  continuous.
+- **IMU measurements**: simulated accelerometer (`accel_x`, `accel_y`)
+  and gyroscope (`gyro_z`) readings with small noise **and** small
+  constant biases. The biases are what make a future dead-reckoning
+  integrator drift over time, especially while GPS is unavailable.
+- **Why simulate a GPS outage?** The whole point of the project is to
+  show that dead reckoning drifts during an outage and that an ML model
+  can learn to correct that drift. Stage 2 is what makes that outage
+  possible to study, because we know the true path even when GPS doesn't.
 
-## Project structure
+**How later stages use this dataset:**
+- Stage 3 converts `gps_latitude/longitude` to local X/Y.
+- Stage 4 integrates `accel_x/accel_y/gyro_z` to perform dead reckoning.
+- Stage 5 handles the logic around the GPS outage window.
+- Stage 6 compares the DR path against `ground_x/ground_y` to show drift.
+- Stage 7 trains an ML model to predict DR error using this data.
+- Stage 8 uses that model to correct the DR trajectory.
+- Stage 9 compares DR error vs AI-corrected error.
+- Stage 10 displays everything on a dashboard.
 
+Regenerate the dataset with:
 ```
-intelligent-dead-reckoning/
-├── data/
-│   ├── raw/          # raw generated trajectory/sensor data (Stage 2+)
-│   ├── processed/     # cleaned / feature-engineered data (later stages)
-│   └── models/        # trained ML models (Stage 7+)
-├── src/
-│   ├── config.py      # centralized scenario configuration (Stage 1)
-│   └── scenario.py     # validation, timestamps, GPS-availability helpers (Stage 1)
-├── outputs/            # plots, metrics, exported results (later stages)
-├── dashboard/          # dashboard app (Stage 10)
-├── requirements.txt
-└── README.md
-```
-
-## Stage 1 — Define scenario
-
-`src/config.py` defines a single `SCENARIO` object (a frozen dataclass)
-holding every parameter the rest of the pipeline needs:
-
-- Timing: `TOTAL_DURATION`, `SAMPLING_RATE`
-- GPS outage window: `GPS_OUTAGE_START`, `GPS_OUTAGE_END`
-- Initial state: latitude, longitude, speed, heading
-- Curved road-path shape parameters
-- Noise/bias models: GPS noise, accelerometer noise+bias, gyroscope noise+bias
-- `RANDOM_SEED` for reproducibility
-
-`src/scenario.py` imports that configuration and:
-
-- validates it (`validate_scenario`)
-- computes simulation timestamps (`get_timestamps`)
-- provides GPS-availability helpers (`is_gps_available`, `gps_availability_mask`)
-- prints a human-readable scenario description (`describe_scenario`)
-- runs a smoke test when executed directly
-
-### Run Stage 1
-
-```bash
-python src/scenario.py
+python src/trajectory.py
 ```
 
-Expected output (abridged):
+## Stage 2 � Synthetic Trajectory Generation
 
+**Why synthetic data?** Real GNSS/IMU logs with known ground truth and a
+labeled GPS outage are hard to get on short notice. Generating synthetic
+data lets us control exactly when GPS is available, guarantees a known
+ground truth for every later error calculation, and keeps the dataset
+reproducible (fixed random seed = 42).
+
+- **Ground truth**: the true, noise-free position/speed/heading/
+  acceleration/angular velocity of the simulated vehicle. This is the
+  reference every later stage compares against.
+- **GPS measurements**: a noisy version of the ground-truth position
+  (`gps_x`, `gps_y`, `gps_latitude`, `gps_longitude`) plus a
+  `gps_available` flag. During the simulated outage (60s�90s) these
+  columns are `NaN` and `gps_available = 0`, while timestamps stay
+  continuous.
+- **IMU measurements**: simulated accelerometer (`accel_x`, `accel_y`)
+  and gyroscope (`gyro_z`) readings with small noise **and** small
+  constant biases. The biases are what make a future dead-reckoning
+  integrator drift over time, especially while GPS is unavailable.
+- **Why simulate a GPS outage?** The whole point of the project is to
+  show that dead reckoning drifts during an outage and that an ML model
+  can learn to correct that drift. Stage 2 is what makes that outage
+  possible to study, because we know the true path even when GPS doesn't.
+
+**How later stages use this dataset:**
+- Stage 3 converts `gps_latitude/longitude` to local X/Y.
+- Stage 4 integrates `accel_x/accel_y/gyro_z` to perform dead reckoning.
+- Stage 5 handles the logic around the GPS outage window.
+- Stage 6 compares the DR path against `ground_x/ground_y` to show drift.
+- Stage 7 trains an ML model to predict DR error using this data.
+- Stage 8 uses that model to correct the DR trajectory.
+- Stage 9 compares DR error vs AI-corrected error.
+- Stage 10 displays everything on a dashboard.
+
+Regenerate the dataset with:
 ```
-Scenario: Vehicle navigation with simulated GNSS outage
-Duration: 120 seconds
-Sampling rate: 10 Hz
-GPS outage: 60–90 seconds
-Total samples: 1200
+python src/trajectory.py
 ```
-
-## Setup
-
-```bash
-pip install -r requirements.txt
-```
-
-## Notes
-
-- Stage 1 does **not** generate any trajectory, run dead reckoning, train
-  any ML model, or build the dashboard — those are handled in later stages,
-  reusing the same `SCENARIO` config defined here.
-- No TensorFlow/PyTorch is used anywhere in this prototype; only lightweight
-  dependencies (numpy, pandas, scikit-learn, matplotlib, streamlit).
