@@ -1,25 +1,45 @@
 {
-  "note": "SYNTHETIC DEMO DATA - not real sensor/navigation data",
-  "outage_range": [
-    80,
-    150
-  ],
-  "dr_metrics": {
-    "MAE": 5.877601362702597,
-    "RMSE": 7.372881051529313,
-    "max_error": 14.64155046434632,
-    "final_error": 14.64155046434632,
-    "median_error": 5.1765698102121664,
-    "p95_error": 13.557564630267844
+  "data_source": "Stage 8 real pipeline output",
+  "total_rows": 1200,
+  "outage_samples": 369,
+  "overall": {
+    "dead_reckoning": {
+      "MAE_m": 6.726244614993928,
+      "RMSE_m": 7.689673381573551,
+      "max_error_m": 13.251061094281313,
+      "final_error_m": 13.251061094281313,
+      "median_error_m": 6.554173965365143,
+      "p95_error_m": 12.511982988297714
+    },
+    "ai_corrected": {
+      "MAE_m": 0.9695838727033154,
+      "RMSE_m": 2.749109143290445,
+      "max_error_m": 12.926973787232868,
+      "final_error_m": 12.926973787232868,
+      "median_error_m": 0.005078192095085867,
+      "p95_error_m": 6.369886247898408
+    },
+    "RMSE_improvement_pct": 64.24933795136185,
+    "MAE_improvement_pct": 85.58506375843142
   },
-  "ai_metrics": {
-    "MAE": 0.8816402044053898,
-    "RMSE": 1.1059321577293972,
-    "max_error": 2.196232569651946,
-    "final_error": 2.196232569651946,
-    "median_error": 0.7764854715318231,
-    "p95_error": 2.033634694540175
-  },
-  "rmse_improvement_pct": 84.99999999999999,
-  "mae_improvement_pct": 85.0
+  "gnss_outage": {
+    "dead_reckoning": {
+      "MAE_m": 4.5489086313155305,
+      "RMSE_m": 4.652936506009511,
+      "max_error_m": 6.3174978512604945,
+      "final_error_m": 6.3174978512604945,
+      "median_error_m": 4.562536379189529,
+      "p95_error_m": 6.115777801216403
+    },
+    "ai_corrected": {
+      "MAE_m": 0.0074798639022884104,
+      "RMSE_m": 0.033446805618677654,
+      "max_error_m": 0.4548103975022428,
+      "final_error_m": 0.021151355571416758,
+      "median_error_m": 0.0027261817302804314,
+      "p95_error_m": 0.013076403271978818
+    },
+    "RMSE_improvement_pct": 99.28116780498767,
+    "MAE_improvement_pct": 99.83556794588496
+  }
 }
