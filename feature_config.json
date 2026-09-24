@@ -1,0 +1,23 @@
+{
+  "feature_columns": [
+    "ax_imu",
+    "ay_imu",
+    "gyro_z",
+    "vx_dr",
+    "vy_dr",
+    "heading_dr",
+    "speed_dr",
+    "acceleration_magnitude",
+    "gyro_magnitude",
+    "time_since_last_gps"
+  ],
+  "model_type": "RandomForestRegressor",
+  "training_source": "stage6/data/drift_analysis.csv",
+  "split_method": "chronological_80_20",
+  "train_rows": 960,
+  "test_rows": 240,
+  "rmse_x": 0.2273506551492992,
+  "rmse_y": 6.141323423206959,
+  "mae_x": 0.20296343503821465,
+  "mae_y": 4.779677472988271
+}
