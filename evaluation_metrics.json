@@ -1,0 +1,25 @@
+{
+  "note": "SYNTHETIC DEMO DATA - not real sensor/navigation data",
+  "outage_range": [
+    80,
+    150
+  ],
+  "dr_metrics": {
+    "MAE": 5.877601362702597,
+    "RMSE": 7.372881051529313,
+    "max_error": 14.64155046434632,
+    "final_error": 14.64155046434632,
+    "median_error": 5.1765698102121664,
+    "p95_error": 13.557564630267844
+  },
+  "ai_metrics": {
+    "MAE": 0.8816402044053898,
+    "RMSE": 1.1059321577293972,
+    "max_error": 2.196232569651946,
+    "final_error": 2.196232569651946,
+    "median_error": 0.7764854715318231,
+    "p95_error": 2.033634694540175
+  },
+  "rmse_improvement_pct": 84.99999999999999,
+  "mae_improvement_pct": 85.0
+}
